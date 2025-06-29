@@ -23,6 +23,7 @@ export const login = async (body) => {
         { email: body.userOrEmail },
         { user: body.userOrEmail }
       ]
+        
     })
     if (!user) throw new Error("not found")
     const passwordIsCorrect = comparePassword(body.password, user.password)

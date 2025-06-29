@@ -37,10 +37,10 @@ const BottomText = styled.p`
 `
 
 
-function CreatePost() {
+function CreatePost({ userName }) {
   return(
     <PostContainer>
-      <H4><Title>No que você esta pensando, @nick?</Title></H4>
+      <H4><Title>No que você esta pensando, @{userName}</Title></H4>
       <TextContainer>
         <TextArea placeholder="Digite sua mensagem" rows="4"/>
       </TextContainer>
