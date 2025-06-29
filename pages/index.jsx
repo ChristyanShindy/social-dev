@@ -7,6 +7,7 @@ import CreatePost from "../src/components/cards/CreaPost"
 import H3 from "../src/components/typography/H3"
 import Post from "../src/components/cards/Post"
 import axios from "axios"
+import useSWR from "swr"
 import { useEffect, useState } from "react"
 
 const Content = styled.div`
@@ -34,18 +35,13 @@ const PostContainer = styled.div`
   margin-top: 20px;
 `
 
+const fetcher = url => axios.get(url).then(res => res.data)
+
 function HomePage ( { user }) {
-  const [data, setData] = useState([])
 
-  const handlePosts = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post`);
-    setData(response.data);
-  }
-  useEffect(() => {
-    handlePosts()
-  }, [])
 
-  console.log(data)
+  const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, fetcher)
+  
   return (
     <>
     <Navbar />
@@ -58,13 +54,13 @@ function HomePage ( { user }) {
           </RefreshPostsContainer>
           <PostContainer>
             { 
-            data.map(post =>
+            data?.map(post =>
               <Post 
               key={post._id}
               text={post.text}
               user={post.createdBy.user}
               date={post.createdDate}
-              />
+            />
             )
             }
           </PostContainer>
