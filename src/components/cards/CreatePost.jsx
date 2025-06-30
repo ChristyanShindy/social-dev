@@ -42,14 +42,14 @@ const BottomText = styled.p`
 `
 function CreatePost({ userName }) {
   const { mutate } = useSWRConfig()
-  const { control, handleSubmit, formState: { isValid }, reset} = useForm({
+  const { control, handleSubmit, formState: { isValid }, reset } = useForm({
     resolver: joiResolver(createPostSchema),
     mode: 'all'
   })
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, data)
-    if (response.status === 201){
+    if (response.status === 201) {
       reset()
       mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
     }
@@ -59,7 +59,7 @@ function CreatePost({ userName }) {
       <H4><Title>No que você esta pensando, @{userName}</Title></H4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextContainer>
-          <ControlledTextArea placeholder="Digite sua mensagem" rows="4" control={control} name="text" maxLength="256"/>
+          <ControlledTextArea placeholder="Digite sua mensagem" rows="4" control={control} name="text" maxLength="256" />
         </TextContainer>
         <BottomContainer>
           <BottomText>

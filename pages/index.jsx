@@ -3,7 +3,7 @@ import { withIronSessionSsr } from "iron-session/next"
 import { ironConfig } from "../lib/middlewares/ironSession"
 import Navbar from "../src/components/layout/Navbar"
 import Container from "../src/components/layout/Container"
-import CreatePost from "../src/components/cards/CreatPost"
+import CreatePost from "../src/components/cards/CreatePost"
 import H3 from "../src/components/typography/H3"
 import Post from "../src/components/cards/Post"
 import axios from "axios"
@@ -39,7 +39,6 @@ const fetcher = url => axios.get(url).then(res => res.data)
 
 function HomePage ( { user }) {
 
-
   const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, fetcher)
   
   return (
@@ -57,6 +56,8 @@ function HomePage ( { user }) {
               text={post.text}
               user={post.createdBy.user}
               date={post.createdDate}
+              isOwner={post.createdBy._id === user.id}
+              id={post._id}
             />
             )
             }
