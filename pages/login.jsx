@@ -11,6 +11,7 @@ import { joiResolver } from "@hookform/resolvers/joi"
 import axios from "axios"
 import { useRouter } from "next/router"
 import { loginSchema } from "../modules/user/user.schema"
+import { useState } from "react"
 
 const FormContainer = styled.div`
 margin-top: 60px
@@ -26,6 +27,7 @@ const Text = styled.p`
   text-align: center;
 `
 function LoginPage() {
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { control, handleSubmit, formState: { errors }, setError } = useForm({ 
       resolver: joiResolver(loginSchema)
@@ -33,6 +35,7 @@ function LoginPage() {
 
   const onSubmit = async (data) => {
     try{
+      setLoading(true)
       const { status } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, data)
       if (status === 200) {
         router.push('/')
@@ -48,6 +51,8 @@ function LoginPage() {
           message: 'Usuário ou email incorreto'
         })
       }
+    } finally{
+      setLoading(false)
     }
   } 
 
@@ -60,7 +65,7 @@ function LoginPage() {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input label="Email ou usuário" name="userOrEmail" control={control}/>
           <Input label="Senha" type="password" name="password" control={control}/>
-          <Button type="submit" disabled={Object.keys(errors).length > 0} >Entrar</Button>
+          <Button loading={loading} type="submit" disabled={Object.keys(errors).length > 0} >Entrar</Button>
           <Text>Não possui uma conta? <Link href="/signup">Faça seu cadastro</Link></Text>
         </Form>
       </FormContainer>

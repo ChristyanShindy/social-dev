@@ -8,6 +8,7 @@ import { createPostSchema } from "../../../modules/post/post.schema"
 import axios from "axios";
 import ControlledTextArea from "../inputs/ControllerTextArea";
 import { useSWRConfig } from "swr";
+import { useState } from "react";
 
 const PostContainer = styled.div`
   background-color: ${props => props.theme.white};
@@ -41,6 +42,7 @@ const BottomText = styled.p`
   flex: 1;
 `
 function CreatePost({ userName }) {
+  const [loading, setLoading] = useState(false)
   const { mutate } = useSWRConfig()
   const { control, handleSubmit, formState: { isValid }, reset } = useForm({
     resolver: joiResolver(createPostSchema),
@@ -48,10 +50,16 @@ function CreatePost({ userName }) {
   })
 
   const onSubmit = async (data) => {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, data)
-    if (response.status === 201) {
-      reset()
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, data)
+      if (response.status === 201) {
+        reset()
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
   }
   return (
@@ -59,18 +67,18 @@ function CreatePost({ userName }) {
       <H4><Title>No que você esta pensando, @{userName}</Title></H4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextContainer>
-          <ControlledTextArea 
-            placeholder="Digite sua mensagem" 
-            rows="4" control={control} 
-            name="text" 
-            maxLength="256" 
+          <ControlledTextArea
+            placeholder="Digite sua mensagem"
+            rows="4" control={control}
+            name="text"
+            maxLength="256"
           />
         </TextContainer>
         <BottomContainer>
           <BottomText>
             A sua mensagem será publica
           </BottomText>
-          <Button disabled={!isValid}>Postar Mensagem</Button>
+          <Button loading={loading} disabled={!isValid}>Postar Mensagem</Button>
         </BottomContainer>
       </form>
     </PostContainer>
