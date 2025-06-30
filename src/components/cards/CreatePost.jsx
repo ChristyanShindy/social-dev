@@ -59,7 +59,12 @@ function CreatePost({ userName }) {
       <H4><Title>No que você esta pensando, @{userName}</Title></H4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextContainer>
-          <ControlledTextArea placeholder="Digite sua mensagem" rows="4" control={control} name="text" maxLength="256" />
+          <ControlledTextArea 
+            placeholder="Digite sua mensagem" 
+            rows="4" control={control} 
+            name="text" 
+            maxLength="256" 
+          />
         </TextContainer>
         <BottomContainer>
           <BottomText>
